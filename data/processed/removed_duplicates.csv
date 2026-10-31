@@ -1,0 +1,346 @@
+filename,split,class_index,group,drop_reason
+train/00688.jpg,train,94,150,repeat within split
+train/01706.jpg,train,279,1705,label conflict
+train/02190.jpg,train,6,2189,copy of a test image
+train/02416.jpg,train,6,2189,copy of a test image
+train/02604.jpg,train,513,1467,repeat within split
+train/03856.jpg,train,59,1737,repeat within split
+train/04373.jpg,train,77,4369,copy of a test image
+train/04413.jpg,train,276,1705,label conflict
+train/04684.jpg,train,539,4679,copy of a test image
+train/04744.jpg,train,286,1934,repeat within split
+train/04911.jpg,train,177,4905,copy of a test image
+train/05137.jpg,train,421,1637,repeat within split
+train/05441.jpg,train,400,5434,copy of a test image
+train/05559.jpg,train,279,1705,label conflict
+train/06006.jpg,train,521,2437,repeat within split
+train/06170.jpg,train,37,6161,copy of a test image
+train/06175.jpg,train,6,2189,copy of a test image
+train/06650.jpg,train,141,2022,repeat within split
+train/06691.jpg,train,421,6616,repeat within split
+train/06804.jpg,train,320,1321,repeat within split
+train/06883.jpg,train,421,2945,repeat within split
+train/07150.jpg,train,246,6631,repeat within split
+train/07239.jpg,train,421,1766,repeat within split
+train/07411.jpg,train,30,7395,label conflict
+train/07520.jpg,train,482,6679,repeat within split
+train/07962.jpg,train,20,1233,repeat within split
+train/08130.jpg,train,183,7142,repeat within split
+train/08187.jpg,train,6,8168,copy of a test image
+train/08354.jpg,train,6,2189,copy of a test image
+train/08617.jpg,train,141,7943,repeat within split
+train/09146.jpg,train,153,6904,repeat within split
+train/09392.jpg,train,245,5276,repeat within split
+train/09446.jpg,train,30,7395,label conflict
+train/09551.jpg,train,68,8607,repeat within split
+train/09647.jpg,train,512,9622,copy of a test image
+train/09762.jpg,train,425,4825,repeat within split
+train/09850.jpg,train,94,945,repeat within split
+train/10110.jpg,train,477,10083,copy of a test image
+train/10230.jpg,train,327,1103,repeat within split
+train/10239.jpg,train,177,10211,copy of a test image
+train/10259.jpg,train,293,247,repeat within split
+train/10295.jpg,train,476,7726,repeat within split
+train/10355.jpg,train,16,7788,repeat within split
+train/10377.jpg,train,255,10346,copy of a test image
+train/11155.jpg,train,463,10694,repeat within split
+train/11256.jpg,train,141,6519,repeat within split
+train/11741.jpg,train,501,4863,repeat within split
+train/11855.jpg,train,229,11821,copy of a test image
+train/11987.jpg,train,548,4121,repeat within split
+train/12004.jpg,train,94,11969,copy of a test image
+train/12129.jpg,train,174,9587,repeat within split
+train/12145.jpg,train,377,5956,repeat within split
+train/12160.jpg,train,246,6223,repeat within split
+train/12360.jpg,train,526,2447,repeat within split
+train/12440.jpg,train,36,7001,repeat within split
+train/12655.jpg,train,160,12615,copy of a test image
+train/12706.jpg,train,117,42,repeat within split
+train/12839.jpg,train,27,11372,repeat within split
+train/12843.jpg,train,287,12801,copy of a test image
+train/13234.jpg,train,183,7142,repeat within split
+train/13297.jpg,train,537,13254,copy of a test image
+train/13547.jpg,train,62,11163,repeat within split
+train/13648.jpg,train,260,12333,repeat within split
+train/13704.jpg,train,216,5602,repeat within split
+train/13725.jpg,train,153,7811,repeat within split
+train/13765.jpg,train,216,6763,repeat within split
+train/14127.jpg,train,133,5423,repeat within split
+train/14182.jpg,train,195,10486,repeat within split
+train/14704.jpg,train,141,6193,repeat within split
+train/15032.jpg,train,317,14981,copy of a test image
+train/15099.jpg,train,76,813,repeat within split
+train/15215.jpg,train,245,5262,repeat within split
+train/15402.jpg,train,279,1705,label conflict
+train/15609.jpg,train,35,2785,repeat within split
+train/15616.jpg,train,468,12877,repeat within split
+train/15731.jpg,train,112,904,repeat within split
+train/15804.jpg,train,141,107,repeat within split
+train/15820.jpg,train,279,1705,label conflict
+train/15975.jpg,train,31,15916,copy of a test image
+train/16308.jpg,train,43,221,repeat within split
+train/16384.jpg,train,280,16324,copy of a test image
+train/16493.jpg,train,141,4271,repeat within split
+train/16792.jpg,train,153,3099,repeat within split
+train/16884.jpg,train,17,4723,repeat within split
+train/16908.jpg,train,126,13947,repeat within split
+train/16996.jpg,train,151,8849,repeat within split
+train/17008.jpg,train,425,16253,repeat within split
+train/17084.jpg,train,388,7425,repeat within split
+train/17581.jpg,train,287,10397,repeat within split
+train/17733.jpg,train,125,15847,repeat within split
+train/17811.jpg,train,484,17742,copy of a test image
+train/17825.jpg,train,182,14290,repeat within split
+train/17902.jpg,train,27,6888,repeat within split
+train/18172.jpg,train,177,11164,repeat within split
+train/18176.jpg,train,156,16372,repeat within split
+train/18187.jpg,train,20,11884,repeat within split
+train/18222.jpg,train,168,18148,copy of a test image
+train/18228.jpg,train,36,9153,repeat within split
+train/18297.jpg,train,110,778,repeat within split
+train/18309.jpg,train,70,17511,repeat within split
+train/18340.jpg,train,21,1524,repeat within split
+train/18438.jpg,train,530,13919,repeat within split
+train/18531.jpg,train,402,15659,repeat within split
+train/18617.jpg,train,27,5272,repeat within split
+train/18655.jpg,train,339,18574,copy of a test image
+train/18659.jpg,train,62,14417,repeat within split
+train/18670.jpg,train,27,11712,repeat within split
+train/18797.jpg,train,189,5933,repeat within split
+train/19105.jpg,train,64,17114,repeat within split
+train/19123.jpg,train,126,9366,repeat within split
+train/19167.jpg,train,96,10196,repeat within split
+train/19266.jpg,train,183,752,repeat within split
+train/19275.jpg,train,457,10109,repeat within split
+train/19320.jpg,train,30,7395,label conflict
+train/19376.jpg,train,551,3960,repeat within split
+train/19518.jpg,train,153,6673,repeat within split
+train/19595.jpg,train,143,9047,repeat within split
+train/19680.jpg,train,62,19371,repeat within split
+train/19824.jpg,train,39,13516,repeat within split
+train/19874.jpg,train,514,19779,copy of a test image
+train/19906.jpg,train,150,12271,repeat within split
+train/19947.jpg,train,237,7885,repeat within split
+train/20071.jpg,train,413,774,repeat within split
+train/20106.jpg,train,238,6693,repeat within split
+train/20151.jpg,train,6,8168,copy of a test image
+train/20212.jpg,train,6,2189,copy of a test image
+train/20390.jpg,train,528,9572,repeat within split
+train/20464.jpg,train,249,2469,repeat within split
+train/20511.jpg,train,425,3902,repeat within split
+train/20572.jpg,train,72,20122,repeat within split
+train/20832.jpg,train,183,12291,repeat within split
+train/20869.jpg,train,461,10001,repeat within split
+train/20904.jpg,train,530,16587,repeat within split
+train/20999.jpg,train,204,1552,repeat within split
+train/21164.jpg,train,31,7395,label conflict
+train/21210.jpg,train,20,8268,repeat within split
+train/21231.jpg,train,141,3986,repeat within split
+train/21433.jpg,train,27,1793,repeat within split
+train/21446.jpg,train,54,14403,repeat within split
+train/21528.jpg,train,549,12789,repeat within split
+train/21710.jpg,train,64,17114,repeat within split
+train/21787.jpg,train,141,2147,repeat within split
+train/22012.jpg,train,96,7664,repeat within split
+train/22236.jpg,train,373,10460,repeat within split
+train/22274.jpg,train,470,19208,repeat within split
+train/22280.jpg,train,133,20597,repeat within split
+train/22367.jpg,train,28,12680,repeat within split
+train/22453.jpg,train,30,7395,label conflict
+train/22476.jpg,train,99,16141,repeat within split
+train/22584.jpg,train,154,14217,repeat within split
+train/22593.jpg,train,183,16705,repeat within split
+train/22596.jpg,train,184,16243,repeat within split
+train/22616.jpg,train,183,5148,repeat within split
+train/22877.jpg,train,94,945,repeat within split
+train/22952.jpg,train,94,14622,repeat within split
+train/22967.jpg,train,126,12122,repeat within split
+train/23001.jpg,train,253,11127,repeat within split
+train/23102.jpg,train,301,15359,repeat within split
+train/23103.jpg,train,290,5379,repeat within split
+train/23159.jpg,train,107,19198,repeat within split
+train/23173.jpg,train,63,13833,repeat within split
+train/23227.jpg,train,415,19800,repeat within split
+train/23255.jpg,train,143,9047,repeat within split
+train/23313.jpg,train,245,5249,repeat within split
+train/23480.jpg,train,393,8907,repeat within split
+train/23820.jpg,train,124,4897,repeat within split
+train/23885.jpg,train,453,665,repeat within split
+test/01166.jpg,test,461,24397,repeat within split
+test/02675.jpg,test,180,25464,repeat within split
+test/03314.jpg,test,352,25280,repeat within split
+test/04146.jpg,test,23,26113,repeat within split
+test/04566.jpg,test,44,27970,repeat within split
+test/04716.jpg,test,322,27499,repeat within split
+test/05771.jpg,test,145,29242,repeat within split
+test/05851.jpg,test,353,24282,repeat within split
+test/06013.jpg,test,35,25624,repeat within split
+test/06339.jpg,test,41,26571,repeat within split
+test/06446.jpg,test,180,25464,repeat within split
+test/06479.jpg,test,72,29092,repeat within split
+test/06575.jpg,test,548,27271,repeat within split
+test/06897.jpg,test,259,28596,repeat within split
+test/07334.jpg,test,193,30214,repeat within split
+test/07436.jpg,test,393,29066,repeat within split
+test/07881.jpg,test,93,31612,repeat within split
+test/08000.jpg,test,57,27951,repeat within split
+test/08013.jpg,test,247,25501,repeat within split
+test/08274.jpg,test,476,31973,repeat within split
+test/08604.jpg,test,6,25479,repeat within split
+test/08826.jpg,test,165,26064,repeat within split
+test/09050.jpg,test,188,24435,repeat within split
+test/09061.jpg,test,378,29117,repeat within split
+test/09088.jpg,test,533,31282,repeat within split
+test/09246.jpg,test,415,28712,repeat within split
+test/09254.jpg,test,93,31612,repeat within split
+test/09826.jpg,test,311,24821,repeat within split
+test/09910.jpg,test,161,29579,repeat within split
+test/10043.jpg,test,38,32530,repeat within split
+test/10181.jpg,test,20,25829,repeat within split
+test/10229.jpg,test,156,25488,repeat within split
+test/10613.jpg,test,526,27660,repeat within split
+test/10731.jpg,test,94,30904,repeat within split
+test/11219.jpg,test,256,30285,repeat within split
+test/11411.jpg,test,50,23899,repeat within split
+test/11506.jpg,test,137,24372,repeat within split
+test/11515.jpg,test,244,32958,repeat within split
+test/11775.jpg,test,139,33039,repeat within split
+test/11777.jpg,test,269,24661,repeat within split
+test/12009.jpg,test,71,33376,repeat within split
+test/12182.jpg,test,93,31612,repeat within split
+test/12281.jpg,test,148,25913,repeat within split
+test/12302.jpg,test,98,27765,repeat within split
+test/12314.jpg,test,277,34670,repeat within split
+test/12409.jpg,test,30,7395,repeat within split
+test/12613.jpg,test,134,36256,repeat within split
+test/12739.jpg,test,212,24331,repeat within split
+test/12982.jpg,test,418,29662,repeat within split
+test/12997.jpg,test,516,29009,repeat within split
+test/13266.jpg,test,383,24507,repeat within split
+test/13302.jpg,test,486,27478,repeat within split
+test/13427.jpg,test,275,30221,repeat within split
+test/13550.jpg,test,347,36010,repeat within split
+test/13682.jpg,test,7,23986,repeat within split
+test/13747.jpg,test,271,34049,repeat within split
+test/14066.jpg,test,523,33451,repeat within split
+test/14302.jpg,test,15,28474,repeat within split
+test/14451.jpg,test,294,27314,repeat within split
+test/14765.jpg,test,402,31460,repeat within split
+test/14766.jpg,test,49,24243,repeat within split
+test/14842.jpg,test,93,37502,repeat within split
+test/14887.jpg,test,22,32445,repeat within split
+test/14962.jpg,test,6,25479,repeat within split
+test/15055.jpg,test,46,34356,repeat within split
+test/15391.jpg,test,163,26437,repeat within split
+test/15504.jpg,test,145,25171,repeat within split
+test/15571.jpg,test,460,38432,repeat within split
+test/15833.jpg,test,494,33380,repeat within split
+test/15872.jpg,test,156,29391,repeat within split
+test/15892.jpg,test,263,25249,repeat within split
+test/15985.jpg,test,245,29507,repeat within split
+test/16109.jpg,test,57,27951,repeat within split
+test/16241.jpg,test,243,25371,repeat within split
+test/16274.jpg,test,67,31347,repeat within split
+test/16288.jpg,test,156,28883,repeat within split
+test/16296.jpg,test,399,28692,repeat within split
+test/16310.jpg,test,282,36695,repeat within split
+test/16474.jpg,test,526,33055,repeat within split
+test/16734.jpg,test,163,26437,repeat within split
+test/16809.jpg,test,7,40445,repeat within split
+test/17149.jpg,test,188,38783,repeat within split
+test/17440.jpg,test,156,40640,repeat within split
+test/17471.jpg,test,434,36588,repeat within split
+test/17496.jpg,test,486,33301,repeat within split
+test/17557.jpg,test,29,35542,repeat within split
+test/17558.jpg,test,38,32530,repeat within split
+test/17759.jpg,test,546,34245,repeat within split
+test/17938.jpg,test,156,27451,repeat within split
+test/17966.jpg,test,205,37438,repeat within split
+test/18144.jpg,test,93,26947,repeat within split
+test/18282.jpg,test,305,34769,repeat within split
+test/18385.jpg,test,163,26437,repeat within split
+test/18627.jpg,test,157,36186,repeat within split
+test/18640.jpg,test,28,36841,repeat within split
+test/18695.jpg,test,279,33774,repeat within split
+test/18713.jpg,test,145,40502,repeat within split
+test/18858.jpg,test,277,27723,repeat within split
+test/18984.jpg,test,112,36248,repeat within split
+test/19023.jpg,test,1,34313,repeat within split
+test/19039.jpg,test,272,32594,repeat within split
+test/19385.jpg,test,234,39640,repeat within split
+test/19390.jpg,test,30,28506,repeat within split
+test/19440.jpg,test,156,41660,repeat within split
+test/19521.jpg,test,172,31517,repeat within split
+test/19693.jpg,test,100,32384,repeat within split
+test/19711.jpg,test,145,40265,repeat within split
+test/19813.jpg,test,93,42542,repeat within split
+test/19869.jpg,test,46,34356,repeat within split
+test/19879.jpg,test,147,28734,repeat within split
+test/20149.jpg,test,372,36834,repeat within split
+test/20274.jpg,test,212,32822,repeat within split
+test/20556.jpg,test,62,37926,repeat within split
+test/20565.jpg,test,61,42682,repeat within split
+test/20702.jpg,test,475,31049,repeat within split
+test/20767.jpg,test,94,28173,repeat within split
+test/20777.jpg,test,178,29624,repeat within split
+test/20790.jpg,test,430,42560,repeat within split
+test/20980.jpg,test,404,37897,repeat within split
+test/21097.jpg,test,341,41282,repeat within split
+test/21098.jpg,test,69,33909,repeat within split
+test/21154.jpg,test,239,41184,repeat within split
+test/21259.jpg,test,145,31876,repeat within split
+test/21348.jpg,test,94,32591,repeat within split
+test/21491.jpg,test,93,35379,repeat within split
+test/21504.jpg,test,255,10346,repeat within split
+test/21553.jpg,test,172,44321,repeat within split
+test/21572.jpg,test,321,43657,repeat within split
+test/21606.jpg,test,413,42302,repeat within split
+test/21703.jpg,test,227,40782,repeat within split
+test/21709.jpg,test,526,31383,repeat within split
+test/21810.jpg,test,82,35398,repeat within split
+test/21824.jpg,test,546,36742,repeat within split
+test/21828.jpg,test,143,44133,repeat within split
+test/21949.jpg,test,276,16324,repeat within split
+test/21975.jpg,test,36,43170,repeat within split
+test/22007.jpg,test,68,41249,repeat within split
+test/22011.jpg,test,475,32329,repeat within split
+test/22034.jpg,test,93,36427,repeat within split
+test/22075.jpg,test,61,24882,repeat within split
+test/22115.jpg,test,8,42578,repeat within split
+test/22135.jpg,test,104,28174,repeat within split
+test/22160.jpg,test,195,43664,repeat within split
+test/22273.jpg,test,407,44517,repeat within split
+test/22315.jpg,test,462,42973,repeat within split
+test/22490.jpg,test,63,45563,repeat within split
+test/22504.jpg,test,407,34980,repeat within split
+test/22560.jpg,test,30,7395,repeat within split
+test/22569.jpg,test,271,34928,repeat within split
+test/22629.jpg,test,179,38321,repeat within split
+test/22732.jpg,test,234,26042,repeat within split
+test/22741.jpg,test,489,35384,repeat within split
+test/22769.jpg,test,402,42622,repeat within split
+test/22809.jpg,test,147,28734,repeat within split
+test/22858.jpg,test,217,37063,repeat within split
+test/22959.jpg,test,279,26285,repeat within split
+test/22963.jpg,test,144,46319,repeat within split
+test/23082.jpg,test,6,40665,repeat within split
+test/23113.jpg,test,61,46080,repeat within split
+test/23204.jpg,test,180,25464,repeat within split
+test/23580.jpg,test,323,23835,repeat within split
+test/23610.jpg,test,30,7395,repeat within split
+test/23735.jpg,test,6,31400,repeat within split
+test/23894.jpg,test,355,34856,repeat within split
+test/24033.jpg,test,426,33698,repeat within split
+test/24061.jpg,test,145,38031,repeat within split
+test/24074.jpg,test,543,37307,repeat within split
+test/24085.jpg,test,191,44532,repeat within split
+test/24213.jpg,test,70,36865,repeat within split
+test/24323.jpg,test,236,40202,repeat within split
+test/24370.jpg,test,248,32230,repeat within split
+test/24415.jpg,test,71,33376,repeat within split
+test/24425.jpg,test,156,32027,repeat within split
+test/24465.jpg,test,415,29114,repeat within split
+test/24493.jpg,test,145,29185,repeat within split
+test/24548.jpg,test,221,46703,repeat within split
+test/24606.jpg,test,338,25415,repeat within split
+test/24615.jpg,test,269,31928,repeat within split

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Environments
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Tooling caches
+.ruff_cache/
+.pytest_cache/
+.coverage
+
+# Data and weights too large for git: the raw photographs (9.3 GB) download
+# with one call to `download_nabirds()`, and the cached features, test
+# predictions, LIME masks and checkpoints are rebuilt by the notebook.
+data/raw/
+data/interim/
+models/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
