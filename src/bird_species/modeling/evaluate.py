@@ -90,7 +90,10 @@ def confused_pairs(labels: np.ndarray, predicted: np.ndarray, class_names: Seque
     """The most frequent (true class, predicted class) mistakes."""
     wrong = predicted != labels
     pairs = pd.DataFrame({"true": labels[wrong], "predicted": predicted[wrong]})
-    counts = pairs.value_counts().head(top).reset_index(name="errors")
+    # Ties are broken by class index, so the table is the same under any pandas version.
+    counts = (pairs.value_counts().reset_index(name="errors")
+              .sort_values(["errors", "true", "predicted"], ascending=[False, True, True])
+              .head(top).reset_index(drop=True))
     names = np.asarray(class_names)
     counts["true_class"] = names[counts["true"]]
     counts["predicted_class"] = names[counts["predicted"]]

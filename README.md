@@ -86,6 +86,8 @@ uv sync --extra dev
 uv run jupyter lab notebooks/bird_species_classification.ipynb    # kernel: "Python 3 (ipykernel)"
 ```
 
+Any other Python 3.10 or newer environment works too, such as a conda environment used across the course: run `pip install -e .` inside it, then pick its kernel. The cached results below make that run take minutes.
+
 Or end to end from the command line:
 
 ```bash

@@ -133,3 +133,10 @@ def test_class_mix_accuracy_reweights_per_class_rates():
     correct = np.array([1, 1, 0, 0], dtype=bool)
     labels = np.array([0, 0, 1, 1])
     assert class_mix_accuracy(correct, labels, np.array([0, 0, 0, 1])) == pytest.approx(0.75)
+
+
+def test_confused_pairs_break_ties_by_class_index():
+    labels = np.array([2, 2, 0, 0, 1, 1])
+    predicted = np.array([0, 0, 1, 1, 2, 2])
+    table = confused_pairs(labels, predicted, ["a", "b", "c"], np.array(["x", "y", "z"]), top=2)
+    assert table[["true", "predicted"]].to_numpy().tolist() == [[0, 1], [1, 2]]
