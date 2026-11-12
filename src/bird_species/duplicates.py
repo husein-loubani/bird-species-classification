@@ -32,7 +32,9 @@ def hash_array(hex_hashes) -> np.ndarray:
     return np.array([int(value, 16) for value in hex_hashes], dtype=np.uint64)
 
 
-def hash_pairs(hashes: np.ndarray, radius: int = HASH_SEARCH_RADIUS, block: int = BLOCK_ROWS // 4) -> pd.DataFrame:
+def hash_pairs(
+    hashes: np.ndarray, radius: int = HASH_SEARCH_RADIUS, block: int = BLOCK_ROWS // 4
+) -> pd.DataFrame:
     """
     Every pair (first < second) whose hashes differ in at most `radius` bits.
 
@@ -41,25 +43,32 @@ def hash_pairs(hashes: np.ndarray, radius: int = HASH_SEARCH_RADIUS, block: int 
     """
     firsts, seconds, distances = [], [], []
     for start in range(0, len(hashes), block):
-        distance = np.bitwise_count(hashes[start:start + block, None] ^ hashes[None, :])
+        distance = np.bitwise_count(hashes[start : start + block, None] ^ hashes[None, :])
         local, other = np.nonzero(distance <= radius)
         first = local + start
         keep = other > first
         firsts.append(first[keep])
         seconds.append(other[keep])
         distances.append(distance[local[keep], other[keep]])
-    return pd.DataFrame({"first": np.concatenate(firsts), "second": np.concatenate(seconds),
-                         "distance": np.concatenate(distances).astype(int)})
+    return pd.DataFrame(
+        {
+            "first": np.concatenate(firsts),
+            "second": np.concatenate(seconds),
+            "distance": np.concatenate(distances).astype(int),
+        }
+    )
 
 
 def unit_rows(features: np.ndarray) -> np.ndarray:
     return (features / np.linalg.norm(features, axis=1, keepdims=True)).astype(np.float32)
 
 
-def similar_pairs(features: np.ndarray, floor: float = SIMILARITY_FLOOR,
-                  block: int = BLOCK_ROWS) -> tuple[pd.DataFrame, np.ndarray]:
+def similar_pairs(
+    features: np.ndarray, floor: float = SIMILARITY_FLOOR, block: int = BLOCK_ROWS
+) -> tuple[pd.DataFrame, np.ndarray]:
     """
-    Every pair with cosine similarity of at least `floor`, and each image's nearest-neighbor similarity.
+    Every pair with cosine similarity of at least `floor`, and each image's nearest-neighbor
+    similarity.
 
     The full similarity matrix of ~48,000 images would need 9 GB, so it is
     built one row block at a time and only the close pairs are kept.
@@ -68,26 +77,32 @@ def similar_pairs(features: np.ndarray, floor: float = SIMILARITY_FLOOR,
     firsts, seconds, similarities = [], [], []
     nearest = np.empty(len(unit), dtype=np.float32)
     for start in range(0, len(unit), block):
-        similarity = unit[start:start + block] @ unit.T
+        similarity = unit[start : start + block] @ unit.T
         rows = np.arange(len(similarity))
         similarity[rows, rows + start] = -1.0
-        nearest[start:start + len(similarity)] = similarity.max(axis=1)
+        nearest[start : start + len(similarity)] = similarity.max(axis=1)
         local, other = np.nonzero(similarity >= floor)
         first = local + start
         keep = other > first
         firsts.append(first[keep])
         seconds.append(other[keep])
         similarities.append(similarity[local[keep], other[keep]])
-    pairs = pd.DataFrame({"first": np.concatenate(firsts), "second": np.concatenate(seconds),
-                          "similarity": np.concatenate(similarities)})
+    pairs = pd.DataFrame(
+        {
+            "first": np.concatenate(firsts),
+            "second": np.concatenate(seconds),
+            "similarity": np.concatenate(similarities),
+        }
+    )
     return pairs, nearest
 
 
 def pair_kind(pairs: pd.DataFrame, split: np.ndarray) -> np.ndarray:
     """Whether each pair sits inside the training split, inside the test split, or across them."""
     first, second = split[pairs["first"]], split[pairs["second"]]
-    return np.where(first == second, np.char.add(first.astype(str), "-" + second.astype(str)),
-                    "train-test")
+    return np.where(
+        first == second, np.char.add(first.astype(str), "-" + second.astype(str)), "train-test"
+    )
 
 
 def band_profile(pairs: pd.DataFrame, column: str, bins, labels) -> pd.DataFrame:
@@ -109,13 +124,19 @@ def band_profile(pairs: pd.DataFrame, column: str, bins, labels) -> pd.DataFrame
     band = pairs[column] if bins is None else pd.cut(pairs[column], bins, right=False)
     frame = pd.DataFrame({"band": band, "known": known, "cross": known & (first != second)})
     profile = frame.groupby("band", observed=False).agg(
-        pairs=("known", "size"), labeled_pairs=("known", "sum"), cross_label_pairs=("cross", "sum"))
-    profile["cross_label_%"] = (100 * profile["cross_label_pairs"]
-                                / profile["labeled_pairs"].where(profile["labeled_pairs"] > 0)).round(1)
+        pairs=("known", "size"), labeled_pairs=("known", "sum"), cross_label_pairs=("cross", "sum")
+    )
+    profile["cross_label_%"] = (
+        100
+        * profile["cross_label_pairs"]
+        / profile["labeled_pairs"].where(profile["labeled_pairs"] > 0)
+    ).round(1)
     return profile.reset_index()
 
 
-def duplicate_groups(count: int, pairs: pd.DataFrame, threshold: float = DUPLICATE_SIMILARITY) -> np.ndarray:
+def duplicate_groups(
+    count: int, pairs: pd.DataFrame, threshold: float = DUPLICATE_SIMILARITY
+) -> np.ndarray:
     """
     A group id per image: connected components of the "same photograph" graph.
 
@@ -123,7 +144,9 @@ def duplicate_groups(count: int, pairs: pd.DataFrame, threshold: float = DUPLICA
     apart from A would still leave the same picture on both sides through B.
     """
     linked = pairs[pairs["similarity"] >= threshold]
-    graph = coo_matrix((np.ones(len(linked)), (linked["first"], linked["second"])), shape=(count, count))
+    graph = coo_matrix(
+        (np.ones(len(linked)), (linked["first"], linked["second"])), shape=(count, count)
+    )
     return connected_components(graph, directed=False)[1]
 
 
@@ -159,7 +182,9 @@ def resolve_duplicates(frame: pd.DataFrame, groups: np.ndarray) -> pd.DataFrame:
     return data
 
 
-def sample_band(pairs: pd.DataFrame, low: float, high: float, count: int, seed: int) -> pd.DataFrame:
+def sample_band(
+    pairs: pd.DataFrame, low: float, high: float, count: int, seed: int
+) -> pd.DataFrame:
     """Up to `count` random pairs with similarity in [low, high), for looking at them."""
     band = pairs[(pairs["similarity"] >= low) & (pairs["similarity"] < high)]
     return band.sample(min(count, len(band)), random_state=seed).sort_values("similarity")

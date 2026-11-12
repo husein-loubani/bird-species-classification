@@ -20,9 +20,9 @@ dependencies = [
     "scipy>=1.14",
     "statsmodels>=0.14",
     "timm>=1.0",
-    "torch>=2.5",
+    "torch>=2.8",
     "torchmetrics>=1.4",
-    "torchvision>=0.20",
+    "torchvision>=0.23",
 ]
 
 [project.optional-dependencies]
@@ -48,7 +48,6 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
-ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

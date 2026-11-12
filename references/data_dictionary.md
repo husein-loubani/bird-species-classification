@@ -66,18 +66,28 @@ The 555 classes carry 404 distinct species names: 267 species have one class and
 | `partitions.csv` | every kept photograph: `filename`, `split`, `partition` (`train`, `validation` or `test`), `class_index`, `group` (duplicate group id) |
 | `removed_duplicates.csv` | every removed photograph with its `drop_reason` |
 | `backbone_curves.csv` | validation accuracy, top-5 accuracy and macro F1 of the prototype classifier per backbone, number of shots and sampling seed |
-| `labeling_history.csv` | per round of the labeling loop: labeled photographs, validation and test accuracy, proposals, confirmations and their share |
-| `head_search.csv` | every Optuna trial of the head search with its hyperparameters and best validation accuracy |
-| `finetune_history.csv` | per epoch of the final fine-tuning run: training and validation loss and accuracy |
+| `episodic_layer.csv` | per species split: the number of novel classes and their five-shot accuracy with frozen DINOv2 features and with the layer trained on base-class episodes |
+| `labeling_history.csv` | per round of the brief's labeling loop: labeled photographs, share of wrong labels (`label_noise`), validation and test accuracy, proposals, confirmations and their share |
+| `labeler_robustness.csv` | per simulated labeler, mistake seed and round of the brief's loop: labeled photographs, share of wrong labels, validation and test accuracy, proposals and confirmations |
+| `query_strategies.csv` | per selection strategy, seed and round of the loop in which the labeler names each photograph's class: labeled photographs and validation accuracy |
+| `head_search.csv` | every Optuna trial of the DINOv2 head search with its hyperparameters and best validation accuracy |
+| `finetune_history.csv` | per epoch of the fine-tuning run carried forward: training and validation loss and accuracy |
+| `finetune_runs.csv` | every full DINOv2 fine-tuning run (three seeds of the recipe and four one-change variants): learning rate, epochs, unfrozen blocks, seed, best validation accuracy and test accuracy |
 | `test_results.csv` | every classifier on the combined test set: labels used, accuracy with its 95% Wilson interval, top-5 accuracy, macro F1, species-level accuracy |
-| `lime_scores.csv` | per explained test photograph: share of LIME's evidence inside the bird's box, the box's share of the input, and whether it was a best or worst prediction |
+| `calibration.csv` | test accuracy, mean confidence, expected calibration error and negative log-likelihood of the trained head and of the fine-tuned network before and after temperature scaling |
+| `lime_scores.csv` | per explained test photograph: its group (best, worst, smallest birds, largest birds), share of LIME's evidence inside the bird's box, the box's share of the input, their ratio (`lift`), and for the size groups whether the prediction was right |
+| `lime_stability.csv` | per re-explained photograph and sampling seed: the overlap (intersection over union) of its evidence mask with seed 42's, and the change in the share inside the box |
 
 ## Caches (`data/interim/` and `models/`, not tracked)
+
+Every cached result carries a fingerprint of what produced it (the photographs and labels, the starting weights, every setting and the seed): `fingerprint.txt` inside a run folder, `<file>.fingerprint` beside a cached file. A result is reused only when the fingerprint of the current request matches, so a change to any input recomputes it instead of reloading a stale result under the same name.
 
 | Path | Contents |
 |---|---|
 | `data/interim/embeddings/<backbone>.npz` | frozen features of every photograph for ResNet-50, CLIP ViT-B/16 and DINOv2 ViT-B/14, with the filename order |
-| `data/interim/test_probabilities_finetuned.npy` | the fine-tuned network's class probabilities on the test set |
-| `data/interim/lime.npz` | LIME evidence masks and scores for the explained photographs |
-| `models/head/` | the Optuna study and every head run's best checkpoint and training log |
-| `models/finetune/` | the learning-rate check runs and the final fine-tuned checkpoint with its training log |
+| `data/interim/embeddings/dinov2_vit_b14_448px.npz` | DINOv2 features of the training and validation photographs at 448 pixels |
+| `data/interim/probabilities/<run>_<partition>.npy` | class probabilities of each fine-tuned run on the test set, and of the models carried forward on validation |
+| `data/interim/lime/*.npz` | LIME evidence masks and scores: best and worst predictions, the size samples, and the reruns with other seeds |
+| `models/head/` | the Optuna study and every DINOv2 head run's best checkpoint and training log, including the head on 448-pixel features |
+| `models/head_resnet50/` | the same for the ResNet-50 head |
+| `models/finetune/` | the short learning-rate checks (`short_lr_*`), the recipe's three seeds (`recipe_seed*`), the one-change variants (`epochs_8`, `blocks_12`, `lr_1e-05`, `lr_0.0001`) and the ResNet-50 runs (`resnet50_lr_*`), each with its best checkpoint and training log |

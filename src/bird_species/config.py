@@ -22,8 +22,10 @@ CLASSES_PATH = RAW_DIR / "classes.csv"
 # The brief links NABirds on Activeloop. Its "val" split is the official
 # NABirds test split, and there is no third split, so the brief's "combine the
 # original val and test sets" yields exactly that split.
-ACTIVELOOP_SPLITS = {"train": "hub://activeloop/nabirds-dataset-train",
-                     "test": "hub://activeloop/nabirds-dataset-val"}
+ACTIVELOOP_SPLITS = {
+    "train": "hub://activeloop/nabirds-dataset-train",
+    "test": "hub://activeloop/nabirds-dataset-val",
+}
 OFFICIAL_COUNTS = {"train": 23_929, "test": 24_633}
 EXPORT_WORKERS = 8
 
@@ -94,6 +96,36 @@ PROPOSAL_RANKINGS = ("margin", "similarity")
 MAX_ROUNDS = 25
 GALLERY_REFERENCES = 3
 GALLERY_PROPOSALS = 4
+# Simulated labelers: the chance of confirming a wrong proposal (and of missing a right one),
+# and the chance of confirming a wrong proposal whose class looks like the true one.
+LABELER_SLIPS = (0.05, 0.10, 0.20)
+LOOKALIKE_SLIP = 0.5
+LABELER_SEEDS = (42, 43, 44, 45, 46)
+# The brief's loop with each simulated labeler runs this many rounds, past the 70% target.
+LABELER_ROUNDS = 12
+# Selection strategies compared with a labeler who names every photograph's class.
+QUERY_STRATEGIES = ("confident", "uncertain", "random", "mixed")
+QUERY_PER_CLASS = 2
+QUERY_ROUNDS = 8
+QUERY_SEEDS = (42, 43, 44)
+# Rounds at which the strategies are compared in the notebook's table.
+QUERY_REPORT_ROUNDS = (2, 4, 8)
+
+# --- training the embedding on episodes ---------------------------------------
+
+SPECIES_SPLIT = (0.6, 0.2, 0.2)
+SPLIT_SEEDS = (42, 43, 44)
+EPISODE_WAYS = 50
+EPISODE_SHOTS = 5
+EPISODE_QUERIES = 5
+# Episodes drawn from five labels per class split them into two support and three query photographs.
+FEW_LABEL_SHOTS = 2
+FEW_LABEL_QUERIES = 3
+EPISODES = 1000
+EPISODE_CHECK = 25
+PROJECTION_HIDDEN = 512
+PROJECTION_LR = 3e-4
+PROJECTION_WEIGHT_DECAY = 1e-4
 
 # --- uptrained classifier ------------------------------------------------------
 
@@ -110,10 +142,26 @@ FINETUNE_WARMUP_FRACTION = 0.1
 FINETUNE_PATIENCE = 2
 UNFROZEN_BLOCKS = 4
 LAYER_DECAY = 0.75
-FINETUNE_LRS = (3e-5, 1e-4)
+FINETUNE_LR = 3e-5
+# Rates for the short check: one epoch on a quarter of the training set.
+FINETUNE_LRS = (1e-5, 3e-5, 1e-4, 3e-4)
 TUNING_FRACTION = 0.25
 TUNING_EPOCHS = 1
 FINETUNE_WEIGHT_DECAY = 0.05
+FINETUNE_SEEDS = (42, 43, 44)
+# Each variant changes one setting of the recipe and keeps seed 42.
+FINETUNE_VARIANTS = {
+    "epochs_8": {"max_epochs": 8},
+    "blocks_12": {"unfrozen_blocks": 12},
+    "lr_1e-05": {"base_lr": 1e-5},
+    "lr_0.0001": {"base_lr": 1e-4},
+}
+# ResNet-50's last stage (layer4) holds its last three bottleneck blocks.
+RESNET_UNFROZEN_BLOCKS = 3
+RESNET_LRS = (1e-4, 3e-4, 1e-3)
+# A higher input resolution, tried on frozen features before paying for it in fine-tuning.
+PROBE_SIZE = 448
+PROBE_RESIZE = 512
 CROP_SCALE = (0.35, 1.0)
 COLOR_JITTER = 0.2
 
@@ -121,6 +169,9 @@ COLOR_JITTER = 0.2
 
 CONFIDENCE_LEVEL = 0.95
 TOP_K = 5
+# Equal-width confidence bins for the calibration error, as in Guo et al. (2017).
+CALIBRATION_BINS = 15
+TEMPERATURE_BOUNDS = (0.05, 20.0)
 TIMING_SAMPLE = 100
 CONFUSED_PAIRS = 10
 # Bands of similarity to the nearest training photograph, for the validation/test comparison.
@@ -132,6 +183,10 @@ LIME_SAMPLES = 1000
 LIME_FEATURES = 5
 LIME_BATCH = 50
 LIME_SEGMENTS = {"kernel_size": 4, "max_dist": 200, "ratio": 0.2}
+# Random test photographs explained from the smallest and the largest quartile of bird size.
+LIME_SIZE_EXAMPLES = 20
+# Extra sampling seeds for re-explaining the photographs shown, to check the evidence is stable.
+LIME_SEEDS = (43, 44)
 
 PALETTE = {
     "fewshot": "#4C72B0",

@@ -44,7 +44,12 @@ BOX_COLUMNS = ["box_x", "box_y", "box_w", "box_h"]
 
 
 def split_class_name(name: str) -> tuple[str, str]:
-    """`'Common Eider (Adult male)'` becomes `('Common Eider', 'Adult male')`; a plain name has no variant."""
+    """
+    Split a class name into species and variant.
+
+    `'Common Eider (Adult male)'` becomes `('Common Eider', 'Adult male')`; a plain name has no
+    variant.
+    """
     match = VARIANT_PATTERN.match(name)
     if match is None:
         return name, ""
@@ -55,14 +60,21 @@ def class_table(names: Sequence[str], used_labels: Sequence[int]) -> pd.DataFram
     """The leaf categories that appear as labels, re-indexed to 0..n-1 in taxonomy order."""
     used = sorted(int(label) for label in set(used_labels))
     species, variants = zip(*(split_class_name(names[label]) for label in used), strict=True)
-    return pd.DataFrame({"label": used, "class_index": range(len(used)),
-                         "class_name": [names[label] for label in used],
-                         "species": species, "variant": variants})
+    return pd.DataFrame(
+        {
+            "label": used,
+            "class_index": range(len(used)),
+            "class_name": [names[label] for label in used],
+            "species": species,
+            "variant": variants,
+        }
+    )
 
 
 def export_range(path: str, split: str, start: int, stop: int, raw_dir: Path) -> int:
     """
-    Write samples `start..stop-1` of one split; files already on disk are skipped, so a rerun resumes.
+    Write samples `start..stop-1` of one split. Files already on disk are skipped, so a rerun
+    resumes.
 
     Each file is written under a temporary name and renamed when complete, so
     an interrupted run never leaves a truncated JPEG that a rerun would keep.
@@ -81,8 +93,9 @@ def export_range(path: str, split: str, start: int, stop: int, raw_dir: Path) ->
     return written
 
 
-def export_split(split: str, path: str, raw_dir: Path,
-                 workers: int = EXPORT_WORKERS) -> tuple[pd.DataFrame, list[str]]:
+def export_split(
+    split: str, path: str, raw_dir: Path, workers: int = EXPORT_WORKERS
+) -> tuple[pd.DataFrame, list[str]]:
     """
     Write one Activeloop split's JPEGs to `raw_dir/split` and return its metadata rows.
 
@@ -100,21 +113,31 @@ def export_split(split: str, path: str, raw_dir: Path,
     shapes = dataset["images"].shapes()
     (raw_dir / split).mkdir(parents=True, exist_ok=True)
     edges = np.linspace(0, len(dataset), workers + 1).astype(int)
-    Parallel(n_jobs=workers)(delayed(export_range)(path, split, int(start), int(stop), raw_dir)
-                             for start, stop in zip(edges[:-1], edges[1:], strict=True))
+    Parallel(n_jobs=workers)(
+        delayed(export_range)(path, split, int(start), int(stop), raw_dir)
+        for start, stop in zip(edges[:-1], edges[1:], strict=True)
+    )
     first_box = np.array([np.asarray(box, dtype=float).reshape(-1, 4)[0] for box in boxes])
-    rows = pd.DataFrame({
-        "split": split, "index": np.arange(len(dataset)),
-        "filename": [f"{split}/{index:05d}.jpg" for index in range(len(dataset))],
-        "label": labels.astype(int),
-        "box_x": first_box[:, 0], "box_y": first_box[:, 1],
-        "box_w": first_box[:, 2], "box_h": first_box[:, 3],
-        "height": shapes[:, 0], "width": shapes[:, 1],
-    })
+    rows = pd.DataFrame(
+        {
+            "split": split,
+            "index": np.arange(len(dataset)),
+            "filename": [f"{split}/{index:05d}.jpg" for index in range(len(dataset))],
+            "label": labels.astype(int),
+            "box_x": first_box[:, 0],
+            "box_y": first_box[:, 1],
+            "box_w": first_box[:, 2],
+            "box_h": first_box[:, 3],
+            "height": shapes[:, 0],
+            "width": shapes[:, 1],
+        }
+    )
     return rows, names
 
 
-def download_nabirds(raw_dir: Path = RAW_DIR, splits: dict[str, str] = ACTIVELOOP_SPLITS) -> pd.DataFrame:
+def download_nabirds(
+    raw_dir: Path = RAW_DIR, splits: dict[str, str] = ACTIVELOOP_SPLITS
+) -> pd.DataFrame:
     """
     Export NABirds once and return the metadata table; later calls read the cache.
 
@@ -157,41 +180,71 @@ def audit_file(filename: str, raw_dir: Path = RAW_DIR, hash_size: int = HASH_SIZ
     """
     path = raw_dir / filename
     data = path.read_bytes()
-    row = {"filename": filename, "file_bytes": len(data),
-           "sha256": hashlib.sha256(data).hexdigest(), "decodes": True,
-           "mode": "", "decoded_width": 0, "decoded_height": 0, "phash": ""}
+    row = {
+        "filename": filename,
+        "file_bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+        "decodes": True,
+        "mode": "",
+        "decoded_width": 0,
+        "decoded_height": 0,
+        "phash": "",
+    }
     try:
         with Image.open(path) as image:
             image.verify()
         with Image.open(path) as image:
             image.load()
-            row.update(mode=image.mode, decoded_width=image.width, decoded_height=image.height,
-                       phash=str(imagehash.phash(image.convert("RGB"), hash_size=hash_size)))
+            row.update(
+                mode=image.mode,
+                decoded_width=image.width,
+                decoded_height=image.height,
+                phash=str(imagehash.phash(image.convert("RGB"), hash_size=hash_size)),
+            )
     except (OSError, SyntaxError, ValueError):
         row["decodes"] = False
     return row
 
 
-def audit_images(metadata: pd.DataFrame, raw_dir: Path = RAW_DIR, n_jobs: int = N_JOBS) -> pd.DataFrame:
+def audit_images(
+    metadata: pd.DataFrame, raw_dir: Path = RAW_DIR, n_jobs: int = N_JOBS
+) -> pd.DataFrame:
     """The audit row of every file, joined back to its metadata, with the box checks."""
     rows = Parallel(n_jobs=n_jobs, batch_size=64)(
-        delayed(audit_file)(name, raw_dir) for name in metadata["filename"])
+        delayed(audit_file)(name, raw_dir) for name in metadata["filename"]
+    )
     audit = metadata.merge(pd.DataFrame(rows), on="filename")
-    audit["shape_matches"] = ((audit["decoded_width"] == audit["width"])
-                              & (audit["decoded_height"] == audit["height"]))
+    audit["shape_matches"] = (audit["decoded_width"] == audit["width"]) & (
+        audit["decoded_height"] == audit["height"]
+    )
     audit["too_small"] = audit[["decoded_width", "decoded_height"]].min(axis=1) < MIN_IMAGE_SIDE
-    audit["box_overshoot"] = np.maximum(audit["box_x"] + audit["box_w"] - audit["width"],
-                                        audit["box_y"] + audit["box_h"] - audit["height"]).clip(lower=0)
-    audit["box_inside"] = ((audit["box_x"] >= 0) & (audit["box_y"] >= 0) & (audit["box_overshoot"] <= 1))
+    audit["box_overshoot"] = np.maximum(
+        audit["box_x"] + audit["box_w"] - audit["width"],
+        audit["box_y"] + audit["box_h"] - audit["height"],
+    ).clip(lower=0)
+    audit["box_inside"] = (
+        (audit["box_x"] >= 0) & (audit["box_y"] >= 0) & (audit["box_overshoot"] <= 1)
+    )
     return audit
 
 
 def audit_summary(audit: pd.DataFrame) -> pd.DataFrame:
     """One row per split: how many files fail each check."""
-    checks = audit.assign(fails_decode=~audit["decodes"], not_rgb=audit["mode"] != "RGB",
-                          shape_mismatch=~audit["shape_matches"], box_outside=~audit["box_inside"],
-                          identical_bytes=audit.duplicated("sha256", keep="first"))
-    columns = ["fails_decode", "not_rgb", "shape_mismatch", "too_small", "box_outside", "identical_bytes"]
+    checks = audit.assign(
+        fails_decode=~audit["decodes"],
+        not_rgb=audit["mode"] != "RGB",
+        shape_mismatch=~audit["shape_matches"],
+        box_outside=~audit["box_inside"],
+        identical_bytes=audit.duplicated("sha256", keep="first"),
+    )
+    columns = [
+        "fails_decode",
+        "not_rgb",
+        "shape_mismatch",
+        "too_small",
+        "box_outside",
+        "identical_bytes",
+    ]
     summary = checks.groupby("split")[columns].sum()
     summary.insert(0, "images", checks.groupby("split").size())
     return summary.reset_index()
@@ -209,41 +262,59 @@ def clip_boxes(frame: pd.DataFrame) -> pd.DataFrame:
     right = np.minimum(frame["box_x"] + frame["box_w"], frame["width"])
     bottom = np.minimum(frame["box_y"] + frame["box_h"], frame["height"])
     clipped = frame.assign(box_w=right - frame["box_x"], box_h=bottom - frame["box_y"])
-    clipped["box_fraction"] = clipped["box_w"] * clipped["box_h"] / (clipped["width"] * clipped["height"])
+    clipped["box_fraction"] = (
+        clipped["box_w"] * clipped["box_h"] / (clipped["width"] * clipped["height"])
+    )
     clipped["box_center_x"] = (clipped["box_x"] + clipped["box_w"] / 2) / clipped["width"]
     clipped["box_center_y"] = (clipped["box_y"] + clipped["box_h"] / 2) / clipped["height"]
     return clipped
 
 
-def crop_geometry(width: float, height: float, resize: int = RESIZE_SIZE,
-                  crop: int = IMAGE_SIZE) -> tuple[float, float, float]:
-    """The scale and offsets that map original pixels into the resized, center-cropped model input."""
+def crop_geometry(
+    width: float, height: float, resize: int = RESIZE_SIZE, crop: int = IMAGE_SIZE
+) -> tuple[float, float, float]:
+    """The scale and offsets that map original pixels into the resized, center-cropped input."""
     scale = resize / min(width, height)
     return scale, (width * scale - crop) / 2, (height * scale - crop) / 2
 
 
-def box_in_crop(box: Sequence[float], width: float, height: float, resize: int = RESIZE_SIZE,
-                crop: int = IMAGE_SIZE) -> tuple[float, float, float, float]:
-    """A left-top-width-height box as corner coordinates inside the model's input crop, clipped to it."""
+def box_in_crop(
+    box: Sequence[float],
+    width: float,
+    height: float,
+    resize: int = RESIZE_SIZE,
+    crop: int = IMAGE_SIZE,
+) -> tuple[float, float, float, float]:
+    """A left-top-width-height box as corners inside the model's input crop, clipped to it."""
     scale, left, top = crop_geometry(width, height, resize, crop)
     x0, y0 = box[0] * scale - left, box[1] * scale - top
     x1, y1 = x0 + box[2] * scale, y0 + box[3] * scale
-    return (float(np.clip(x0, 0, crop)), float(np.clip(y0, 0, crop)),
-            float(np.clip(x1, 0, crop)), float(np.clip(y1, 0, crop)))
+    return (
+        float(np.clip(x0, 0, crop)),
+        float(np.clip(y0, 0, crop)),
+        float(np.clip(x1, 0, crop)),
+        float(np.clip(y1, 0, crop)),
+    )
 
 
-def box_kept_by_crop(frame: pd.DataFrame, resize: int = RESIZE_SIZE, crop: int = IMAGE_SIZE) -> np.ndarray:
+def box_kept_by_crop(
+    frame: pd.DataFrame, resize: int = RESIZE_SIZE, crop: int = IMAGE_SIZE
+) -> np.ndarray:
     """The share of each bird's box that survives the center crop every model sees."""
     kept = []
     for row in frame[["width", "height", *BOX_COLUMNS]].itertuples(index=False):
         scale = resize / min(row.width, row.height)
         x0, y0, x1, y1 = box_in_crop(row[2:], row.width, row.height, resize, crop)
-        kept.append((x1 - x0) * (y1 - y0) / max(row.box_w * row.box_h * scale ** 2, 1e-9))
+        kept.append((x1 - x0) * (y1 - y0) / max(row.box_w * row.box_h * scale**2, 1e-9))
     return np.asarray(kept)
 
 
-def carve_validation(pool: pd.DataFrame, fraction: float = VALIDATION_FRACTION, shots: int = MAX_SHOTS,
-                     seed: int = RANDOM_SEED) -> pd.Series:
+def carve_validation(
+    pool: pd.DataFrame,
+    fraction: float = VALIDATION_FRACTION,
+    shots: int = MAX_SHOTS,
+    seed: int = RANDOM_SEED,
+) -> pd.Series:
     """
     Mark a stratified, group-aware validation share of the training pool.
 
@@ -263,7 +334,7 @@ def carve_validation(pool: pd.DataFrame, fraction: float = VALIDATION_FRACTION, 
 
 
 def assign_partitions(clean: pd.DataFrame, seed: int = RANDOM_SEED) -> pd.DataFrame:
-    """Label every kept photograph as train, validation or test; test is the whole cleaned test split."""
+    """Label each kept photograph train, validation or test; test is the cleaned test split."""
     data = clean.copy()
     data["partition"] = np.where(data["split"] == "test", "test", "train")
     pool = data[data["partition"] == "train"]
@@ -274,8 +345,13 @@ def assign_partitions(clean: pd.DataFrame, seed: int = RANDOM_SEED) -> pd.DataFr
 def partition_summary(data: pd.DataFrame) -> pd.DataFrame:
     """Images, classes and per-class counts for each partition."""
     counts = data.groupby(["partition", "class_index"]).size()
-    summary = counts.groupby("partition").agg(images="sum", classes="size", per_class_min="min",
-                                              per_class_median="median", per_class_max="max")
+    summary = counts.groupby("partition").agg(
+        images="sum",
+        classes="size",
+        per_class_min="min",
+        per_class_median="median",
+        per_class_max="max",
+    )
     return summary.reindex(["train", "validation", "test"]).reset_index()
 
 
@@ -290,24 +366,31 @@ def draw_shots(pool: pd.DataFrame, shots: int, seed: int = RANDOM_SEED) -> pd.In
     return pd.Index(chosen)
 
 
-def _moment_chunk(filenames: Sequence[str], size: int, raw_dir: Path) -> tuple[np.ndarray, np.ndarray]:
+def _moment_chunk(
+    filenames: Sequence[str], size: int, raw_dir: Path
+) -> tuple[np.ndarray, np.ndarray]:
     resize = int(round(size * RESIZE_SIZE / IMAGE_SIZE))
     total = np.zeros((size, size, 3))
     squares = np.zeros((size, size, 3))
     for name in filenames:
         image = load_image(name, raw_dir)
         scale = resize / min(image.size)
-        image = image.resize((max(size, round(image.width * scale)), max(size, round(image.height * scale))),
-                             Image.BICUBIC)
+        image = image.resize(
+            (max(size, round(image.width * scale)), max(size, round(image.height * scale))),
+            Image.BICUBIC,
+        )
         left, top = (image.width - size) // 2, (image.height - size) // 2
-        pixels = np.asarray(image.crop((left, top, left + size, top + size)), dtype=np.float64) / 255.0
+        pixels = (
+            np.asarray(image.crop((left, top, left + size, top + size)), dtype=np.float64) / 255.0
+        )
         total += pixels
-        squares += pixels ** 2
+        squares += pixels**2
     return total, squares
 
 
-def pixel_moments(filenames: Sequence[str], size: int = MOMENT_SIZE, raw_dir: Path = RAW_DIR,
-                  n_jobs: int = N_JOBS) -> tuple[np.ndarray, np.ndarray]:
+def pixel_moments(
+    filenames: Sequence[str], size: int = MOMENT_SIZE, raw_dir: Path = RAW_DIR, n_jobs: int = N_JOBS
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Pixel-wise mean and standard deviation over photographs framed the way the models frame them.
 
@@ -315,21 +398,38 @@ def pixel_moments(filenames: Sequence[str], size: int = MOMENT_SIZE, raw_dir: Pa
     of images is ever held in memory.
     """
     chunks = np.array_split(np.asarray(filenames), max(1, abs(n_jobs) * 4))
-    parts = Parallel(n_jobs=n_jobs)(delayed(_moment_chunk)(chunk, size, raw_dir) for chunk in chunks)
+    parts = Parallel(n_jobs=n_jobs)(
+        delayed(_moment_chunk)(chunk, size, raw_dir) for chunk in chunks
+    )
     total = sum(part[0] for part in parts)
     squares = sum(part[1] for part in parts)
     mean = total / len(filenames)
-    return mean, np.sqrt(np.maximum(squares / len(filenames) - mean ** 2, 0))
+    return mean, np.sqrt(np.maximum(squares / len(filenames) - mean**2, 0))
 
 
-def variant_examples(frame: pd.DataFrame, classes: pd.DataFrame, species_count: int, per_species: int,
-                     seed: int = RANDOM_SEED) -> pd.DataFrame:
-    """One photograph of each of the first `per_species` variants of the first species split that many ways."""
+def variant_examples(
+    frame: pd.DataFrame,
+    classes: pd.DataFrame,
+    species_count: int,
+    per_species: int,
+    seed: int = RANDOM_SEED,
+) -> pd.DataFrame:
+    """
+    Example photographs of species that NABirds splits into several classes.
+
+    The first `species_count` species with at least `per_species` classes each contribute one
+    photograph of each of their first `per_species` classes.
+    """
     variants = classes.groupby("species", sort=False)["class_index"].apply(list)
     chosen = variants[variants.map(len) >= per_species].head(species_count)
-    rows = [frame[frame["class_index"] == class_index].sample(1, random_state=seed)
-            for class_indices in chosen for class_index in class_indices[:per_species]]
-    return pd.concat(rows).merge(classes[["class_index", "class_name"]], on="class_index", how="left")
+    rows = [
+        frame[frame["class_index"] == class_index].sample(1, random_state=seed)
+        for class_indices in chosen
+        for class_index in class_indices[:per_species]
+    ]
+    return pd.concat(rows).merge(
+        classes[["class_index", "class_name"]], on="class_index", how="left"
+    )
 
 
 def write_processed(tables: dict[str, pd.DataFrame], directory: Path = PROCESSED_DIR) -> list[str]:

@@ -28,4 +28,6 @@ def test_paired_comparison_counts_only_disagreements():
     assert result["relative_error_reduction"] == pytest.approx(0.08 / 0.18)
     # Twelve disagreements is below 25, so the exact binomial test applies:
     # P(X <= 2 | n=12, p=0.5) doubled.
-    assert result["p_value"] == pytest.approx(2 * sum(__import__("math").comb(12, k) for k in range(3)) / 2 ** 12)
+    assert result["p_value"] == pytest.approx(
+        2 * sum(__import__("math").comb(12, k) for k in range(3)) / 2**12
+    )

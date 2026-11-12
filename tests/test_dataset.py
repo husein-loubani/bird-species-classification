@@ -25,11 +25,17 @@ from bird_species.dataset import (
 from tests.conftest import make_photo
 
 
-@pytest.mark.parametrize(("name", "expected"), [
-    ("Common Eider (Adult male)", ("Common Eider", "Adult male")),
-    ("Yellow-rumped Warbler (Winter/juvenile Audubon's)", ("Yellow-rumped Warbler", "Winter/juvenile Audubon's")),
-    ("Wild Turkey", ("Wild Turkey", "")),
-])
+@pytest.mark.parametrize(
+    ("name", "expected"),
+    [
+        ("Common Eider (Adult male)", ("Common Eider", "Adult male")),
+        (
+            "Yellow-rumped Warbler (Winter/juvenile Audubon's)",
+            ("Yellow-rumped Warbler", "Winter/juvenile Audubon's"),
+        ),
+        ("Wild Turkey", ("Wild Turkey", "")),
+    ],
+)
 def test_class_names_split_into_species_and_variant(name, expected):
     assert split_class_name(name) == expected
 
@@ -84,13 +90,23 @@ def test_box_in_crop_matches_a_hand_computed_resize_and_crop():
 
 
 def test_box_kept_by_crop_is_one_inside_and_a_half_when_half_is_cut():
-    frame = pd.DataFrame({"width": [512, 512], "height": [256, 256], "box_x": [200, 32],
-                          "box_y": [50, 50], "box_w": [100, 224], "box_h": [100, 100]})
+    frame = pd.DataFrame(
+        {
+            "width": [512, 512],
+            "height": [256, 256],
+            "box_x": [200, 32],
+            "box_y": [50, 50],
+            "box_w": [100, 224],
+            "box_h": [100, 100],
+        }
+    )
     np.testing.assert_allclose(box_kept_by_crop(frame), [1.0, 0.5])
 
 
 def test_validation_keeps_duplicate_groups_whole_and_leaves_enough_shots():
-    pool = pd.DataFrame({"class_index": [0] * 20 + [1] * 4, "group": list(range(10)) * 2 + [20, 21, 22, 23]})
+    pool = pd.DataFrame(
+        {"class_index": [0] * 20 + [1] * 4, "group": list(range(10)) * 2 + [20, 21, 22, 23]}
+    )
     marked = carve_validation(pool, fraction=0.3, shots=5, seed=0)
     by_group = pool.assign(validation=marked).groupby("group")["validation"].nunique()
     assert (by_group == 1).all(), "a duplicate group straddles the boundary"
@@ -108,8 +124,9 @@ def test_draw_shots_takes_at_most_k_per_class_one_per_group():
 
 
 def test_partitions_seal_the_test_split_and_carve_validation_from_train():
-    frame = pd.DataFrame({"split": ["train"] * 40 + ["test"] * 5, "class_index": [0] * 45,
-                          "group": range(45)})
+    frame = pd.DataFrame(
+        {"split": ["train"] * 40 + ["test"] * 5, "class_index": [0] * 45, "group": range(45)}
+    )
     data = assign_partitions(frame, seed=0)
     assert (data.loc[data["split"] == "test", "partition"] == "test").all()
     summary = partition_summary(data).set_index("partition")
@@ -128,9 +145,13 @@ def test_pixel_moments_of_identical_photographs_have_zero_spread(tmp_path):
 def test_variant_examples_take_species_split_into_enough_variants():
     from bird_species.dataset import variant_examples
 
-    classes = pd.DataFrame({"class_index": range(6),
-                            "class_name": ["A (Male)", "A (Female)", "B", "C (Male)", "C (Female)", "C (Juvenile)"],
-                            "species": ["A", "A", "B", "C", "C", "C"]})
+    classes = pd.DataFrame(
+        {
+            "class_index": range(6),
+            "class_name": ["A (Male)", "A (Female)", "B", "C (Male)", "C (Female)", "C (Juvenile)"],
+            "species": ["A", "A", "B", "C", "C", "C"],
+        }
+    )
     frame = pd.DataFrame({"class_index": [0, 1, 2, 3, 4, 5, 5], "filename": list("abcdefg")})
     examples = variant_examples(frame, classes, species_count=2, per_species=2, seed=0)
     assert examples["class_name"].tolist() == ["A (Male)", "A (Female)", "C (Male)", "C (Female)"]
@@ -139,5 +160,7 @@ def test_variant_examples_take_species_split_into_enough_variants():
 def test_write_processed_writes_one_csv_per_table(tmp_path):
     from bird_species.dataset import write_processed
 
-    written = write_processed({"b": pd.DataFrame({"x": [1]}), "a": pd.DataFrame({"y": [2]})}, tmp_path)
+    written = write_processed(
+        {"b": pd.DataFrame({"x": [1]}), "a": pd.DataFrame({"y": [2]})}, tmp_path
+    )
     assert written == ["a.csv", "b.csv"] and (tmp_path / "a.csv").exists()

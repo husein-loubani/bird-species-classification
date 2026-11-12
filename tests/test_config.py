@@ -6,7 +6,13 @@ from bird_species import config
 
 
 def test_paths_live_inside_the_project():
-    for path in (config.RAW_DIR, config.INTERIM_DIR, config.PROCESSED_DIR, config.MODEL_DIR, config.FIGURE_DIR):
+    for path in (
+        config.RAW_DIR,
+        config.INTERIM_DIR,
+        config.PROCESSED_DIR,
+        config.MODEL_DIR,
+        config.FIGURE_DIR,
+    ):
         assert config.PROJECT_ROOT in path.parents
 
 

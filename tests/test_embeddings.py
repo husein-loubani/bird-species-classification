@@ -18,15 +18,21 @@ from bird_species.embeddings import (
 
 
 def test_eval_transform_produces_the_model_input_size(raw_dir):
-    dataset = ImageFiles(["train/00000.jpg", "test/00000.jpg"], eval_transform((0.5,) * 3, (0.5,) * 3),
-                         labels=[3, 4], raw_dir=raw_dir)
+    dataset = ImageFiles(
+        ["train/00000.jpg", "test/00000.jpg"],
+        eval_transform((0.5,) * 3, (0.5,) * 3),
+        labels=[3, 4],
+        raw_dir=raw_dir,
+    )
     image, label = dataset[1]
     assert image.shape == (3, IMAGE_SIZE, IMAGE_SIZE) and label == 4
     assert len(dataset) == 2
 
 
 def test_image_files_without_labels_return_only_the_tensor(raw_dir):
-    image = ImageFiles(["train/00001.jpg"], eval_transform((0.5,) * 3, (0.5,) * 3), raw_dir=raw_dir)[0]
+    image = ImageFiles(
+        ["train/00001.jpg"], eval_transform((0.5,) * 3, (0.5,) * 3), raw_dir=raw_dir
+    )[0]
     assert isinstance(image, torch.Tensor)
 
 
@@ -41,9 +47,11 @@ def test_feature_cache_is_reused_only_for_the_same_files(tmp_path, monkeypatch):
 
     def fake_encode(backbone, filenames):
         calls.append(list(filenames))
-        return np.arange(len(filenames), dtype=np.float32)[:, None] * np.ones((1, 4), dtype=np.float32)
+        return np.arange(len(filenames), dtype=np.float32)[:, None] * np.ones(
+            (1, 4), dtype=np.float32
+        )
 
-    monkeypatch.setattr(embeddings, "Backbone", lambda name: name)
+    monkeypatch.setattr(embeddings, "Backbone", lambda name, size, resize: name)
     monkeypatch.setattr(embeddings, "encode", fake_encode)
     first = cached_embeddings("resnet50", ["a.jpg", "b.jpg"], cache_dir=tmp_path)
     again = cached_embeddings("resnet50", ["a.jpg", "b.jpg"], cache_dir=tmp_path)
@@ -53,5 +61,30 @@ def test_feature_cache_is_reused_only_for_the_same_files(tmp_path, monkeypatch):
     assert other.shape == (2, 4)
 
 
+def test_a_larger_input_size_gets_its_own_cache(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        embeddings, "Backbone", lambda name, size, resize: calls.append(size) or name
+    )
+    monkeypatch.setattr(
+        embeddings, "encode", lambda backbone, filenames: np.zeros((len(filenames), 2), np.float32)
+    )
+    cached_embeddings("resnet50", ["a.jpg"], cache_dir=tmp_path)
+    cached_embeddings("resnet50", ["a.jpg"], cache_dir=tmp_path, size=448, resize=512)
+    cached_embeddings("resnet50", ["a.jpg"], cache_dir=tmp_path, size=448, resize=512)
+    assert calls == [224, 448]
+    assert sorted(path.name for path in tmp_path.glob("*.npz")) == [
+        "resnet50.npz",
+        "resnet50_448px.npz",
+    ]
+
+
+def test_device_is_a_torch_device():
+    assert isinstance(embeddings.device(), torch.device)
+
+
 def test_prompts_keep_the_variant():
-    assert prompt("Common Eider (Adult male)") == "a photo of a Common Eider (Adult male), a type of bird."
+    assert (
+        prompt("Common Eider (Adult male)")
+        == "a photo of a Common Eider (Adult male), a type of bird."
+    )

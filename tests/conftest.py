@@ -17,13 +17,18 @@ from PIL import Image
 matplotlib.use("Agg")
 
 
-def make_photo(width: int = 320, height: int = 240, color=(30, 120, 200),
-               box=(100, 60, 80, 60), box_color=(220, 40, 40)) -> Image.Image:
+def make_photo(
+    width: int = 320,
+    height: int = 240,
+    color=(30, 120, 200),
+    box=(100, 60, 80, 60),
+    box_color=(220, 40, 40),
+) -> Image.Image:
     """A flat-colored photograph with one rectangle (left, top, width, height) painted on it."""
     pixels = np.zeros((height, width, 3), dtype=np.uint8)
     pixels[:] = color
     left, top, box_width, box_height = box
-    pixels[top:top + box_height, left:left + box_width] = box_color
+    pixels[top : top + box_height, left : left + box_width] = box_color
     return Image.fromarray(pixels)
 
 
@@ -56,8 +61,18 @@ def metadata():
         ("test", 1, "test/00001.jpg", 0, 100, 60, 80, 60, 240, 320),
         ("test", 2, "test/00002.jpg", 0, 100, 60, 80, 60, 240, 320),
     ]
-    columns = ["split", "index", "filename", "class_index", "box_x", "box_y", "box_w", "box_h",
-               "height", "width"]
+    columns = [
+        "split",
+        "index",
+        "filename",
+        "class_index",
+        "box_x",
+        "box_y",
+        "box_w",
+        "box_h",
+        "height",
+        "width",
+    ]
     return pd.DataFrame(rows, columns=columns)
 
 
